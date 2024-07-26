@@ -1,0 +1,29 @@
+{
+  "code": 0,
+  "msg": "",
+  "count": 6,
+  "data": [
+    {
+      "image_id": 10001,
+      "image_url": "../../../images/my/halfway-open-double.png",
+      "image_name": "test.png",
+      "image_size": "1024",
+      "dimensions": "800x600",
+      "image_status": "1",
+      "image_type": "png",
+      "upload_time": "2024-07-19 10:13:21",
+      "uploader_id": "10002"
+    },
+    {
+      "image_id": 10002,
+      "image_url": "../../../images/my/halfway-open-double.png",
+      "image_name": "test.png",
+      "image_size": "1024",
+      "dimensions": "800x600",
+      "image_status": "1",
+      "image_type": "png",
+      "upload_time": "2024-07-19 10:13:21",
+      "uploader_id": "10002"
+    }
+  ]
+}

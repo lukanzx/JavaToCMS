@@ -1,0 +1,14 @@
+{
+  "code": 0,
+  "msg": "",
+  "count": 6,
+  "data": [
+    {
+      "id": 10001,
+      "folderName": "示例",
+      "imageName": "示例",
+      "classification": "示例",
+      "createdAt": "N/A"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "code": 0,
+  "msg": "",
+  "count": 6,
+  "data": [
+    {
+      "id": 10004,
+      "folderName": "folderName-1",
+      "imageName": "imageName-1",
+      "classification": "classification-1",
+      "createdAt": "N/A"
+    },
+    {
+      "id": 10005,
+      "folderName": "folderName-2",
+      "imageName": "imageName-2",
+      "classification": "classification-2",
+      "createdAt": "N/A"
+    }
+  ]
+}
