@@ -12,8 +12,10 @@
  - Apache Tomcat version apache-tomcat-9.0.91
  - Maven version IDEA bundled version Maven3
  - Front end interface framework - LayUI
- - GitHub repository address: https://github.com/zhongshaofa/layuimini/tree/onepage
- - Gitee repository address: https://gitee.com/zhongshaofa/layuimini/tree/onepage
+ - GitHub repository address:
+   - https://github.com/zhongshaofa/layuimini/tree/onepage
+ - Gitee repository address:
+   - https://gitee.com/zhongshaofa/layuimini/tree/onepage
 
 #### Technology Stack
 
