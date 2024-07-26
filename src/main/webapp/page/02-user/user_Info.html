@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <meta content="webkit" name="renderer">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
+    <link href="../../lib/layui-v2.6.3/css/layui.css" media="all" rel="stylesheet">
+    <link href="../../css/public.css" media="all" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="../../lib/ajax.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #userProfile {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 400px;
+            margin: auto;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        p span {
+            font-weight: bold;
+            color: #333;
+        }
+
+        a:hover {
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+<div id="userProfile">
+    <h2>User Profile</h2>
+    <p>Username: <span id="username"></span></p>
+    <p>Email: <span id="email"></span></p>
+    <p>Phone: <span id="phone"></span></p>
+    <p>Type: <span id="type"></span></p>
+    <p>Status: <span id="status"></span></p>
+    <p>Gender: <span id="gender"></span></p>
+    <button id="editProfileBtn" style="position: fixed; bottom: 20px; right: 20px;">Edit Profile</button>
+</div>
+<script charset="utf-8" src="../../lib/layui-v2.6.3/layui.js"></script>
+<script>
+
+    $(document).ready(function () {
+        console.log("Document ready")
+        fetchUserInfo();
+
+        $('#editProfileBtn').click(function () {
+            console.log("Edit Profile button clicked");
+
+            var userId = sessionStorage.getItem('userId');
+            console.log(userId); // This will log the userId to the console
+
+            var index = layer.open({
+                title: '编辑用户信息',
+                type: 2,
+                shade: 0.2,
+                maxmin: true,
+                shadeClose: true,
+                area: ['100%', '100%'],
+                content: './user_edit.html?user_id=' + userId,
+                end: function () {
+                    setTimeout(function () {
+                        fetchUserInfo();
+                        console.log("User info refreshed");
+                    }, 1000);
+                }
+            });
+        });
+    });
+
+    function fetchUserInfo() {
+
+        const formData = {
+            request: 'getUserInfo',
+            user_id: sessionStorage.getItem('userId')
+        };
+        ajaxPost('/UserServlet', formData, populateUserProfile);
+    }
+
+    function populateUserProfile(data) {
+        $('#username').text(data.username);
+        $('#email').text(data.email);
+        $('#phone').text(data.phone_number);
+        $('#type').text(data.user_type);
+        $('#status').text(data.user_status);
+        $('#gender').text(data.user_sex);
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta content="webkit" name="renderer">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
+    <link href="../../lib/layui-v2.6.3/css/layui.css" media="all" rel="stylesheet">
+    <link href="../../css/public.css" media="all" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="../../lib/ajax.js"></script>
+</head>
+<body>
+
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>分类查找</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form action="" class="layui-form layui-form-pane">
+                    <div class="layui-form-item">
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">专题查询</label>
+                            <div class="layui-input-inline">
+                                <input autocomplete="off" class="layui-input" name="topic_name" type="text">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <button class="layui-btn layui-btn-primary" lay-filter="data-search-btn" lay-submit
+                                    type="submit"><i class="layui-icon"></i> 查 找
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script id="toolbarDemo" type="text/html">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加</button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除
+                </button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-load-btn" lay-event="load"> 加载</button>
+            </div>
+        </script>
+
+        <script id="toolbarDemo2" type="text/html">
+            <div class="layui-btn-container">
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script id="currentTableBar" type="text/html">
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+        </script>
+
+    </div>
+</div>
+<script charset="utf-8" src="../../lib/layui-v2.6.3/layui.js"></script>
+<script>
+
+    function returnFormCols() {
+        let toolbar = '#toolbarDemo';
+        let defaultToolbar = ['filter', 'exports', 'print', {
+            title: '提示',
+            layEvent: 'LAYTABLE_TIPS',
+            icon: 'layui-icon-tips'
+        }];
+        let cols = [
+            [
+                {type: "checkbox", width: 50},
+                {field: 'article_id', width: 80, title: 'ID', sort: true},
+                {
+                    field: 'cover_image_id', title: '封面', width: 200, templet: function (d) {
+                        return '<div><img src="' + d.cover_image_id + '" style="height: 32px;"></div>';
+                    }
+                },
+                {field: 'article_title', width: 120, title: '文章标题'},
+                {field: 'article_content', width: 120, title: '文章内容'},
+                {field: 'comment_num', width: 120, title: '文章评论数'},         // 不属于表字段
+                {field: 'look_num', width: 120, title: '文章浏览数'},            // 不属于表字段
+                {field: 'creation_time', width: 80, title: '创建时间'},
+                {field: 'update_time', width: 80, title: '更新时间'},
+                {field: 'topic_name', width: 200, title: '所属专题名称'},         // 不属于表字段
+                {field: 'category_name', width: 200, title: '所属分类名称'},      // 不属于表字段
+                {field: 'creator_id', width: 150, title: '创建者id'},
+                {field: 'is_recommend', width: 150, title: '是否推荐'},
+                {field: 'is_top_up', width: 150, title: '是否置顶'},
+                {title: '操作', minWidth: 80, toolbar: '#currentTableBar', align: "center"}
+            ]
+        ];
+
+        let limits = [10, 15, 20, 25, 50, 100];
+        let limit = 15;
+        let page = true;
+        let skin = 'line';
+
+        return {toolbar, defaultToolbar, cols, limits, limit, page, skin};
+    }
+
+    /**
+     * 通过 AJAX 请求加载表格数据
+     * @param interactivityType 交互类型
+     * @param formData 表单数据
+     */
+    function LoadForm(interactivityType, formData = null) {
+        var $ = layui.jquery, form = layui.form, table = layui.table;
+        let {toolbar, defaultToolbar, cols, limits, limit, page, skin} = returnFormCols();
+        if (interactivityType == 'GET') {
+            table.render({
+                elem: '#currentTableId',
+                url: '/ArticleServlet',
+                method: 'GET',
+                toolbar: toolbar,
+                defaultToolbar: defaultToolbar,
+                cols: cols,
+                limits: limits,
+                limit: limit,
+                page: page,
+                skin: skin
+            });
+        } else if (interactivityType == 'POST') {
+            ajaxPost(
+                '/ArticleServlet',
+                formData,
+                function (res) {
+                    console.log("回调函数被调用")
+                    layui.use('table', function () {
+                            var table = layui.table;
+                            table.render({
+                                elem: '#currentTableId',
+                                data: res.data, // 将返回的数据直接作为表格数据
+                                toolbar: toolbar,
+                                defaultToolbar: defaultToolbar,
+                                cols: cols,
+                                limits: limits,
+                                limit: limit,
+                                page: page,
+                                skin: skin
+                            });
+                        }
+                    )
+                }
+            );
+        }
+    }
+
+    layui.use(['form', 'table'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table;
+
+        LoadForm('GET');
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var result = JSON.stringify(data.field);
+
+            layer.alert('检索完成')
+
+            // 搜索的结果: {"images-name":"爱思组手","images-type":"png"}
+            console.log("搜索的结果:", result)
+            var formData = {
+                request: "getAllArticlesByTopicName",
+                topic_name: data.field["topic_name"]
+            };
+
+            console.log("formData ", formData);
+
+            LoadForm('POST', formData);
+
+            return false;
+        });
+
+        /**
+         * toolbar监听事件
+         * 三个按钮的操作监听事件
+         */
+        //--------------------------------------------------------------------------------------------------------------
+        table.on('toolbar(currentTableFilter)', function (obj) {
+
+            // 监听添加按钮,三个按钮之一
+            if (obj.event === 'add') {
+                var index = layer.open({
+                    title: '添加新用户',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: './article_add.html',
+
+                    // 等待1秒后执行
+                    end: function () {
+                        setTimeout(function () {
+                            LoadForm('GET');
+                            console.log("loadForm called");
+                        }, 1000); // Delay execution by 1000 milliseconds
+                    }
+                });
+
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+
+            }
+            // 监听删除按钮,三个按钮之一
+            else if (obj.event === 'delete') {
+
+                var checkStatus = table.checkStatus('currentTableId')
+                var data = checkStatus.data;
+
+                layer.alert('确认删除选中的信息吗 ? 共' + data.length + ' 条数据', {
+                    title: '删除确认',
+                    btn: ['确认', '取消'],
+                    btn1: function (index, layero) {
+                        layer.close(index);
+
+                        // console.log("删除:", JSON.stringify(data))
+
+                        // 假设 data 是包含上述 JSON 数据的变量
+                        var article_ids = data.map(function (item) {
+                            return item.article_id;
+                        });
+
+                        var formData = {
+                            request: "deleteSomeArticle",
+                            article_ids: article_ids
+                        };
+
+                        console.log(formData);
+
+                        LoadForm('POST', formData);
+
+                    },
+                    btn2: function (index, layero) {
+                        layer.close(index);
+
+                    }
+                });
+
+            }
+            // 监听加载按钮,三个按钮之一
+            else if (obj.event === 'load') {
+                console.log("else if (obj.event === 'load') --> call")
+                LoadForm('GET');
+            }
+        });
+        //--------------------------------------------------------------------------------------------------------------
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit') {
+
+                console.log("编辑 的 ID:", data.id, "and Folder Name:", data.folderName);
+
+                var index = layer.open({
+                    title: '编辑用户信息',
+                    type: 2,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: ['100%', '100%'],
+                    content: './article_edit.html?article_id=' + encodeURIComponent(data.article_id),
+
+                    // 等待1秒后执行
+                    end: function () {
+                        setTimeout(function () {
+                            // loadForm(); // 子页面关闭后执行
+                            // getLoadForm();
+                            LoadForm('GET');
+                            console.log("loadForm called");
+                        }, 1000); // Delay execution by 1000 milliseconds
+                    }
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'delete') {
+                layer.confirm('确认删除这一行?', function (index) {
+
+                    // 打印被选中删除的这一行的 id 值,folderName值
+                    console.log("被选中的行的id:", data.article_id);
+
+                    var formData = {
+                        request: "deleteArticle",
+                        article_id: data.article_id
+                    };
+
+                    ajaxPost('/ArticleServlet', formData, function (res) {
+                        console.log("接收到Servlet返回来的数据")
+                        layer.alert('Data submitted successfully', {title: 'Success'}, function (index) {
+                            layer.close(index);
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+
+                        // 当数据库有回应后, 页面显示删除
+                        // 页面显示删除
+                        obj.del();
+                        layer.close(index);
+
+                    });
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

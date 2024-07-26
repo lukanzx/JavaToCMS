@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta content="webkit" name="renderer">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport">
+    <link href="../../lib/layui-v2.6.3/css/layui.css" media="all" rel="stylesheet">
+    <link href="../../css/public.css" media="all" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="../../lib/ajax.js"></script>
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label required">分类名称</label>
+        <div class="layui-input-block">
+            <input class="layui-input" lay-reqtext="分类名称不能为空" lay-verify="required" name="category_name"
+                   placeholder="请输入分类名称" type="text" value="">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">分类描述</label>
+        <div class="layui-input-block">
+            <input class="layui-input" lay-reqtext="分类描述不能为空" lay-verify="required" name="category_description"
+                   placeholder="请输入分类描述" type="text" value="">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-filter="saveBtn" lay-submit>确认创建</button>
+        </div>
+    </div>
+
+</div>
+<script charset="utf-8" src="../../lib/layui-v2.6.3/layui.js">
+</script>
+
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.$;
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            console.log("保存按钮被调用")
+
+            // user-name, user-password, user-type,user-sex, user-email, user-phone
+            var formData = {
+                request: "addOneCategory",
+                category_name: $('input[name="category_name"]').val(),
+                category_description: $('input[name="category_description"]').val(),
+                creator_id: sessionStorage.getItem('userId')
+            };
+
+            console.log("发送给Servlet的数据", formData)
+
+            ajaxPost('/CategoryServlet', formData, function (res) {
+                console.log("接收到Servlet返回来的数据")
+                layer.alert('Data submitted successfully', {title: 'Success'}, function (index) {
+                    layer.close(index);
+                    var iframeIndex = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(iframeIndex);
+                });
+            });
+
+            return false;
+        });
+    });
+</script>
+
+</body>
+</html>

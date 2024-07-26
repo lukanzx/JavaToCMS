@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>上传图片素材</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label, input {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        #fileInfo {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<form action="/FileUploadServlet" enctype="multipart/form-data" method="POST">
+    <label for="file">File:</label>
+    <input accept="image/*" id="file" name="file" type="file"/><br/><br/>
+
+    <div id="fileInfo"></div>
+
+    <input type="submit" value="确认上传"/>
+</form>
+
+<script>
+    document.getElementById('file').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (!file) {
+            document.getElementById('fileInfo').innerHTML = '';
+            return;
+        }
+
+        let fileInfoHtml = `<table><tr><th>属性</th><th>值</th></tr>`;
+        fileInfoHtml += `<tr><td>文件名</td><td>${file.name}</td></tr>`;
+        fileInfoHtml += `<tr><td>文件大小</td><td>${file.size} bytes</td></tr>`;
+        fileInfoHtml += `<tr><td>文件类型</td><td>${file.type}</td></tr>`;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const img = new Image();
+            img.onload = function () {
+                fileInfoHtml += `<tr><td>文件尺寸</td><td>${img.width} x ${img.height}px</td></tr>`;
+                fileInfoHtml += `</table>`;
+                document.getElementById('fileInfo').innerHTML = fileInfoHtml;
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+
+        console.log("")
+
+    });
+
+</script>
+</body>
+</html>

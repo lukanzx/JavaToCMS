@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Layui 表格示例</title>
+    <link href="../lib/layui-v2.6.3/css/layui.css" media="all" rel="stylesheet">
+
+    <link href="../lib/layui-v2.6.3/css/layui.css" media="all" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="../lib/layui-v2.6.3/layui.js"></script>
+
+</head>
+<body>
+
+<button id="loadTableBtn">加载表格</button>
+<table id="demo" lay-filter="test"></table>
+<script>
+    $(document).ready(function () {
+        $('#loadTableBtn').click(function () {
+            $.ajax({
+                url: '/table', // 根据你的 Servlet 路径进行调整
+                type: 'POST',
+                dataType: 'json',
+                success: function (res) {
+                    layui.use('table', function () {
+                        var table = layui.table;
+                        table.render({
+                            elem: '#demo',
+                            data: res.data, // 将返回的数据直接作为表格数据
+                            cols: [
+                                [
+                                    {field: 'id', title: 'ID', sort: true},
+                                    {field: 'folderName', title: 'Folder Name'},
+                                    {field: 'imageName', title: 'Image Name'},
+                                    {field: 'classification', title: 'Classification'},
+                                    {field: 'createdAt', title: 'Created At'}
+                                ]
+                            ],
+                            page: true // 如果数据较多，可以开启分页
+                        });
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX 请求失败:', status, error);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
