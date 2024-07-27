@@ -19,7 +19,7 @@
 
 #### Technology Stack
 
- - Backend: Servlet+JDBC+MySQL+JSON
+ - Back end: Servlet+JDBC+MySQL+JSON
  - Front end: LayUi+jQuery+Ajax+JSON+HTML+CSS+JS
  - Development tools: IDEA+Maven+Tomcat
 
